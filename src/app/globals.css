@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --tip-red: #E30613;
+  --tip-red-dark: #B00410;
+  --tip-red-glow: rgba(227, 6, 19, 0.15);
+  --bg-page: #0A0A0A;
+  --bg-surface: #141414;
+  --bg-surface-2: #0F0F0F;
+  --bg-input: #0A0A0A;
+  --bg-elevated: linear-gradient(145deg, #151515 0%, #0B0B0B 100%);
+  --text-primary: #FFFFFF;
+  --text-muted: #8A8A8A;
+  --border: #222;
+  --border-strong: #2A2A2A;
+  --bg-gradient: radial-gradient(ellipse at top left, rgba(227, 6, 19, 0.08), transparent 50%),
+                 radial-gradient(ellipse at bottom right, rgba(227, 6, 19, 0.05), transparent 50%);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+body {
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+}
+
+.font-display { font-family: 'Archivo Black', sans-serif; }
+.font-condensed { font-family: 'Barlow Condensed', sans-serif; }
