@@ -10,17 +10,21 @@ interface Trein { id: string; nome: string; descricao: string | null }
 
 export default function EditorTreinamento({ treinamento, modulosIniciais }: { treinamento: Trein; modulosIniciais: Mod[] }) {
   const router = useRouter();
-  const [modulos] = useState<Mod[]>(modulosIniciais);
+  const modulos = modulosIniciais;
   const [novoModulo, setNovoModulo] = useState({ nome: "", tipo: "conhecimento" });
   const [showNovo, setShowNovo] = useState(false);
+  const [criandoModulo, setCriandoModulo] = useState(false);
 
   const criarModulo = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (criandoModulo) return;
+    setCriandoModulo(true);
     await fetch("/api/admin/modulos", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ treinamento_id: treinamento.id, ...novoModulo, ordem: modulos.length + 1 }),
     });
     setNovoModulo({ nome: "", tipo: "conhecimento" }); setShowNovo(false);
+    setCriandoModulo(false);
     router.refresh();
   };
 
@@ -80,6 +84,7 @@ export default function EditorTreinamento({ treinamento, modulosIniciais }: { tr
 
 function ModuloCard({ modulo, onExcluir, onChange }: { modulo: Mod; onExcluir: () => void; onChange: () => void }) {
   const [showNovaP, setShowNovaP] = useState(false);
+  const [salvando, setSalvando] = useState(false);
   const [novaP, setNovaP] = useState({
     enunciado: "",
     tipo: modulo.tipo === "feedback" ? "escala" : "multipla_escolha",
@@ -89,6 +94,8 @@ function ModuloCard({ modulo, onExcluir, onChange }: { modulo: Mod; onExcluir: (
 
   const salvarP = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (salvando) return;
+    setSalvando(true);
     const alts = novaP.tipo === "multipla_escolha"
       ? novaP.alternativas.filter((a) => a.trim()).map((t, i) => ({ texto: t, correta: i === novaP.correta }))
       : [];
@@ -102,6 +109,7 @@ function ModuloCard({ modulo, onExcluir, onChange }: { modulo: Mod; onExcluir: (
     });
     setNovaP({ enunciado: "", tipo: modulo.tipo === "feedback" ? "escala" : "multipla_escolha", alternativas: ["", "", "", ""], correta: 0 });
     setShowNovaP(false);
+    setSalvando(false);
     onChange();
   };
 
@@ -190,7 +198,7 @@ function ModuloCard({ modulo, onExcluir, onChange }: { modulo: Mod; onExcluir: (
           )}
 
           <div className="flex gap-2">
-            <button type="submit" className="bg-[var(--tip-red)] hover:bg-[var(--tip-red-dark)] text-white px-4 py-2 font-condensed text-xs font-bold tracking-[1.3px] uppercase rounded-lg">Salvar</button>
+            <button type="submit" disabled={salvando} className="bg-[var(--tip-red)] hover:bg-[var(--tip-red-dark)] disabled:opacity-50 text-white px-4 py-2 font-condensed text-xs font-bold tracking-[1.3px] uppercase rounded-lg">{salvando ? "Salvando..." : "Salvar"}</button>
             <button type="button" onClick={() => setShowNovaP(false)} className="bg-[var(--bg-surface-2)] border border-[var(--border-strong)] text-white px-4 py-2 font-condensed text-xs tracking-[1.3px] uppercase rounded-lg">Cancelar</button>
           </div>
         </form>
