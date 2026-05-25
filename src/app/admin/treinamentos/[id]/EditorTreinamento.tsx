@@ -25,8 +25,13 @@ export default function EditorTreinamento({ treinamento, modulosIniciais }: { tr
   };
 
   const excluirModulo = async (id: string) => {
-    if (!confirm("Excluir módulo e todas suas perguntas?")) return;
-    await fetch(`/api/admin/modulos/${id}`, { method: "DELETE" });
+    if (!confirm("Excluir este módulo e TODAS as perguntas e alternativas dele?\n\nEsta ação não pode ser desfeita.")) return;
+    const res = await fetch(`/api/admin/modulos/${id}`, { method: "DELETE" });
+    if (!res.ok) {
+      const j = await res.json().catch(() => ({}));
+      alert(j.erro || "Não foi possível excluir o módulo.");
+      return;
+    }
     router.refresh();
   };
 
@@ -101,8 +106,13 @@ function ModuloCard({ modulo, onExcluir, onChange }: { modulo: Mod; onExcluir: (
   };
 
   const excluirP = async (id: string) => {
-    if (!confirm("Excluir pergunta?")) return;
-    await fetch(`/api/admin/perguntas/${id}`, { method: "DELETE" });
+    if (!confirm("Excluir esta pergunta?\n\nEsta ação não pode ser desfeita.")) return;
+    const res = await fetch(`/api/admin/perguntas/${id}`, { method: "DELETE" });
+    if (!res.ok) {
+      const j = await res.json().catch(() => ({}));
+      alert(j.erro || "Não foi possível excluir a pergunta.");
+      return;
+    }
     onChange();
   };
 
