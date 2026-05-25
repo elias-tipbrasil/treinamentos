@@ -22,6 +22,7 @@ export default function Responder({ pin, sessaoId, sessaoStatus, treinamentoNome
   const [respostaTemp, setRespostaTemp] = useState<any>(null);
   const [moduloConcluido, setModuloConcluido] = useState(false);
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
+  const atualRef = useRef<{ modulo: string | null; idx: number }>({ modulo: null, idx: 0 });
 
   useEffect(() => {
     const pid = localStorage.getItem(`participante:${pin}`);
@@ -72,14 +73,19 @@ export default function Responder({ pin, sessaoId, sessaoStatus, treinamentoNome
         setModuloConcluido(true);
         setTimeout(() => {
           setModuloConcluido(false);
+          atualRef.current = { modulo: proximoModulo, idx: proximoIdx };
           setModuloAtivoId(proximoModulo);
           setPerguntaIdx(proximoIdx);
           setRespostaTemp(null);
         }, 2500);
       } else {
+        // Só limpa a seleção temporária se a pergunta/módulo REALMENTE mudou.
+        // Sem isso, o polling a cada 3s reescrevia o estado e apagava a alternativa recém-clicada.
+        const mudou = atualRef.current.modulo !== proximoModulo || atualRef.current.idx !== proximoIdx;
+        atualRef.current = { modulo: proximoModulo, idx: proximoIdx };
         setModuloAtivoId(proximoModulo);
         setPerguntaIdx(proximoIdx);
-        setRespostaTemp(null);
+        if (mudou) setRespostaTemp(null);
       }
     } else {
       // todos os liberados foram respondidos
