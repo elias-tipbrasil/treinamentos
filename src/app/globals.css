@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,6 +7,7 @@
 :root {
   --tip-red: #E30613;
   --tip-red-dark: #B00410;
+  --tip-red-bright: #FF1A2E;
   --tip-red-glow: rgba(227, 6, 19, 0.15);
   --bg-page: #0A0A0A;
   --bg-surface: #141414;
@@ -38,3 +39,20 @@ body {
 
 .font-display { font-family: 'Archivo Black', sans-serif; }
 .font-condensed { font-family: 'Barlow Condensed', sans-serif; }
+
+/* ============================================
+   TEMA CLARO (Painel Comercial)
+   Aplicado em zonas com data-theme="light"
+   Usado em: login, painel do palestrante, admin
+   ============================================ */
+[data-theme="light"],
+[data-theme="light"] body {
+  background: #fafafa;
+  background-image: none;
+  color: #111;
+}
+[data-theme="light"] {
+  --bg-page: #fafafa;
+  --text-primary: #111;
+  --text-muted: #71717a;
+}
