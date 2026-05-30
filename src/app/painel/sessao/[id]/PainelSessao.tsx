@@ -84,19 +84,15 @@ export default function PainelSessao({ sessao, modulos, liberadosIniciais }: { s
 
   return (
     <main className="min-h-screen flex flex-col">
-      <header className="border-b border-[var(--border)] px-8 py-4 flex items-center justify-between bg-[var(--bg-surface-2)]">
-        <div className="flex items-baseline gap-3">
-          <span className="font-display text-2xl tracking-tight">
-            <span className="text-[var(--tip-red)]">TIP</span> BRASIL
-          </span>
-          <span className="font-condensed text-[11px] tracking-[3px] uppercase text-[var(--text-muted)] border-l-2 border-[var(--tip-red)] pl-3">
-            Controle de Sessão
-          </span>
-        </div>
-        <a href="/painel" className="font-condensed text-xs tracking-[2px] uppercase text-[var(--text-muted)] hover:text-white">← Sessões</a>
-      </header>
-
       <section className="flex-1 max-w-6xl mx-auto w-full px-6 py-10">
+        <div className="flex items-baseline gap-3 mb-2">
+          <span className="w-2.5 h-9 bg-[var(--tip-red)] translate-y-1"></span>
+          <h1 className="font-display text-4xl tracking-tight leading-none">CONTROLE DE SESSÃO</h1>
+        </div>
+        <p className="font-condensed text-xs tracking-[3px] uppercase text-[var(--text-muted)] mb-8 ml-5">
+          {sessao.treinamento?.nome} · {sessao.parceiro_isp}
+        </p>
+
         <div className="mb-6 flex justify-end gap-3 flex-wrap">
           <a href={`/painel/sessao/${sessao.id}/telao`} target="_blank"
             className="inline-flex items-center gap-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-2)] border border-[var(--tip-red)] text-[var(--tip-red)] px-5 py-3 font-condensed text-sm font-bold tracking-[1.3px] uppercase rounded-lg transition-all">

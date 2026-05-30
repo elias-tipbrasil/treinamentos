@@ -39,20 +39,3 @@ body {
 
 .font-display { font-family: 'Archivo Black', sans-serif; }
 .font-condensed { font-family: 'Barlow Condensed', sans-serif; }
-
-/* ============================================
-   TEMA CLARO (Painel Comercial)
-   Aplicado em zonas com data-theme="light"
-   Usado em: login, painel do palestrante, admin
-   ============================================ */
-[data-theme="light"],
-[data-theme="light"] body {
-  background: #fafafa;
-  background-image: none;
-  color: #111;
-}
-[data-theme="light"] {
-  --bg-page: #fafafa;
-  --text-primary: #111;
-  --text-muted: #71717a;
-}

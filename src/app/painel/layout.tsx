@@ -29,7 +29,7 @@ export default async function PainelLayout({ children }: { children: React.React
   ];
 
   return (
-    <div data-theme="light" className="min-h-screen flex" style={{ background: "#fafafa", color: "#111" }}>
+    <div className="min-h-screen flex">
       <Sidebar user={user} sections={sections} />
       <main className="flex-1 min-w-0 overflow-x-auto">{children}</main>
     </div>

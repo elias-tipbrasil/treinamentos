@@ -25,94 +25,100 @@ export default async function PainelHome() {
   const passadas = sessoesList.filter((s) => new Date(s.data_hora) < agora && s.status !== "ativa");
 
   return (
-    <div className="px-8 py-8 max-w-6xl mx-auto">
-      <div className="flex items-start justify-between gap-4 flex-wrap mb-8">
-        <div>
-          <h1 className="text-2xl font-medium text-zinc-900">Sessões</h1>
-          <p className="text-sm text-zinc-500 mt-1">Gerencie suas sessões de treinamento</p>
-        </div>
+    <section className="max-w-6xl mx-auto w-full px-6 py-10">
+      <div className="flex items-baseline gap-3 mb-2">
+        <span className="w-2.5 h-9 bg-[var(--tip-red)] translate-y-1"></span>
+        <h1 className="font-display text-4xl tracking-tight leading-none">SESSÕES</h1>
+      </div>
+      <p className="font-condensed text-xs tracking-[3px] uppercase text-[var(--text-muted)] mb-8 ml-5">
+        Gerencie suas execuções de treinamento
+      </p>
+
+      <div className="mb-8 flex justify-end">
         <Link
           href="/painel/nova-sessao"
-          className="inline-flex items-center gap-1.5 bg-[#E60012] hover:bg-[#B5000E] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          className="inline-flex items-center gap-2 bg-[var(--tip-red)] hover:bg-[var(--tip-red-dark)] text-white px-5 py-3 font-condensed text-sm font-bold tracking-[1.3px] uppercase rounded-lg transition-all"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-          Nova Sessão
+          + Nova Sessão
         </Link>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 mb-8">
-        <KpiCard label="Sessões ativas" value={ativas} accent="green" />
+      <div className="grid md:grid-cols-3 gap-4 mb-10">
+        <KpiCard label="Sessões ativas" value={ativas} highlight />
         <KpiCard label="Total no histórico" value={total} />
         <KpiCard label="Treinamentos realizados" value={passadas.length} />
       </div>
 
-      <SessoesTable titulo="Próximas e em andamento" sessoes={proximas} vazia="Nenhuma sessão programada" />
+      <SessoesBlock titulo="Próximas e em andamento" sessoes={proximas} vazia="Nenhuma sessão programada" />
 
       {passadas.length > 0 && (
-        <div className="mt-6">
-          <SessoesTable titulo="Histórico" sessoes={passadas} vazia="" />
+        <div className="mt-8">
+          <SessoesBlock titulo="Histórico" sessoes={passadas} vazia="" />
         </div>
       )}
+    </section>
+  );
+}
+
+function KpiCard({ label, value, highlight }: { label: string; value: number; highlight?: boolean }) {
+  return (
+    <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-6">
+      <div className="font-condensed text-[10px] tracking-[2.5px] uppercase text-[var(--text-muted)] mb-2">{label}</div>
+      <div className={`font-display text-4xl ${highlight ? "text-[var(--tip-red)]" : "text-white"}`}>{value}</div>
     </div>
   );
 }
 
-function KpiCard({ label, value, accent }: { label: string; value: number; accent?: "green" }) {
+function SessoesBlock({ titulo, sessoes, vazia }: { titulo: string; sessoes: any[]; vazia: string }) {
   return (
-    <div className="bg-white border border-zinc-200 rounded-xl p-4">
-      <div className="text-xs text-zinc-500 mb-1.5">{label}</div>
-      <div className={`text-2xl font-medium ${accent === "green" ? "text-emerald-600" : "text-zinc-900"}`}>{value}</div>
-    </div>
-  );
-}
-
-function SessoesTable({ titulo, sessoes, vazia }: { titulo: string; sessoes: any[]; vazia: string }) {
-  return (
-    <div className="bg-white border border-zinc-200 rounded-xl overflow-hidden">
-      <div className="px-4 py-3 border-b border-zinc-200 flex items-center justify-between">
-        <div className="text-sm font-medium text-zinc-900">{titulo}</div>
-        <div className="text-xs text-zinc-500">{sessoes.length} sessão{sessoes.length !== 1 ? "ões" : ""}</div>
+    <div>
+      <div className="flex items-baseline justify-between mb-4">
+        <div className="font-condensed text-xs tracking-[2.5px] uppercase text-[var(--text-muted)]">{titulo}</div>
+        <div className="font-condensed text-[10px] tracking-[2px] uppercase text-[var(--text-muted)]">
+          {sessoes.length} sessão{sessoes.length !== 1 ? "ões" : ""}
+        </div>
       </div>
 
-      {sessoes.length === 0 ? (
-        <div className="p-8 text-center text-sm text-zinc-500">{vazia}</div>
-      ) : (
-        <div className="divide-y divide-zinc-100">
-          {sessoes.map((s) => (
-            <Link
-              key={s.id}
-              href={`/painel/sessao/${s.id}`}
-              className="flex items-center justify-between gap-4 px-4 py-3.5 hover:bg-zinc-50 transition-colors"
-            >
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2 mb-0.5">
-                  <span className="font-mono text-sm font-medium text-zinc-900 tracking-wider bg-zinc-100 px-2 py-0.5 rounded">
-                    {s.pin}
-                  </span>
-                  <span className="text-sm font-medium text-zinc-900 truncate">{s.treinamento?.nome}</span>
+      <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
+        {sessoes.length === 0 ? (
+          <div className="p-12 text-center font-condensed text-sm tracking-[2px] uppercase text-[var(--text-muted)]">
+            {vazia}
+          </div>
+        ) : (
+          <div className="divide-y divide-[var(--border)]">
+            {sessoes.map((s) => (
+              <Link
+                key={s.id}
+                href={`/painel/sessao/${s.id}`}
+                className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-[var(--bg-surface-2)] transition-colors group"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-3 mb-1 flex-wrap">
+                    <span className="font-display text-lg tracking-widest text-[var(--tip-red)] bg-[var(--bg-surface-2)] border border-[var(--border)] px-3 py-0.5 rounded">
+                      {s.pin}
+                    </span>
+                    <span className="font-display text-base text-white">{s.treinamento?.nome}</span>
+                  </div>
+                  <div className="font-condensed text-xs tracking-[1.5px] uppercase text-[var(--text-muted)]">
+                    {s.parceiro_isp} ·{" "}
+                    {new Date(s.data_hora).toLocaleString("pt-BR", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </div>
                 </div>
-                <div className="text-xs text-zinc-500">
-                  {s.parceiro_isp} ·{" "}
-                  {new Date(s.data_hora).toLocaleString("pt-BR", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </div>
-              </div>
-              <StatusBadge status={s.status} />
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-zinc-400 flex-shrink-0">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </Link>
-          ))}
-        </div>
-      )}
+                <StatusBadge status={s.status} />
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--tip-red)] group-hover:translate-x-0.5 transition-all flex-shrink-0">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -120,21 +126,21 @@ function SessoesTable({ titulo, sessoes, vazia }: { titulo: string; sessoes: any
 function StatusBadge({ status }: { status: string }) {
   if (status === "ativa") {
     return (
-      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-md">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+      <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full font-condensed text-[11px] tracking-[1.5px] uppercase text-green-400 bg-green-500/10 border border-green-500/30 flex-shrink-0">
+        <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
         Ativa
       </span>
     );
   }
   if (status === "encerrada") {
     return (
-      <span className="inline-flex items-center text-xs font-medium text-zinc-600 bg-zinc-100 border border-zinc-200 px-2.5 py-1 rounded-md">
+      <span className="inline-flex items-center px-3 py-1 rounded-full font-condensed text-[11px] tracking-[1.5px] uppercase text-[var(--text-muted)] bg-[var(--bg-surface-2)] border border-[var(--border)] flex-shrink-0">
         Encerrada
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-md">
+    <span className="inline-flex items-center px-3 py-1 rounded-full font-condensed text-[11px] tracking-[1.5px] uppercase text-amber-400 bg-amber-500/10 border border-amber-500/30 flex-shrink-0">
       {status}
     </span>
   );
