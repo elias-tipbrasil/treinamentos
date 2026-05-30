@@ -21,7 +21,7 @@ export default function Sidebar({ user, sections }: SidebarProps) {
             <span style={{ color: "var(--tip-red-bright)" }}>TIP</span>{" "}
             <span className="text-white">BRASIL</span>
           </div>
-          <div className="text-[11px] text-zinc-400 mt-1.5 tracking-wide">Sistema de Provas</div>
+          <div className="text-[11px] text-zinc-400 mt-1.5 tracking-wide">Painel Onboard</div>
         </Link>
       </div>
 
