@@ -10,6 +10,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         { href: "/painel", label: "Sessões", icon: ICONS.dashboard },
         { href: "/painel/nova-sessao", label: "Nova Sessão", icon: ICONS.plus },
         { href: "/painel/dashboard", label: "Dashboard", icon: ICONS.chart },
+        { href: "/painel/kickoff", label: "Kickoff", icon: ICONS.rocket },
       ],
     },
     {
