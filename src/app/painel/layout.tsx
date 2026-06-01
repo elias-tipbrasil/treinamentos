@@ -15,6 +15,7 @@ export default async function PainelLayout({ children }: { children: React.React
         { href: "/painel/nova-sessao", label: "Nova Sessão", icon: ICONS.plus },
         { href: "/painel/dashboard", label: "Dashboard", icon: ICONS.chart },
         { href: "/painel/kickoff", label: "Kickoff", icon: ICONS.rocket },
+        { href: "/painel/projetos", label: "Projetos", icon: ICONS.folder },
       ],
     },
     ...(isAdmin

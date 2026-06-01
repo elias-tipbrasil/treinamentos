@@ -11,6 +11,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         { href: "/painel/nova-sessao", label: "Nova Sessão", icon: ICONS.plus },
         { href: "/painel/dashboard", label: "Dashboard", icon: ICONS.chart },
         { href: "/painel/kickoff", label: "Kickoff", icon: ICONS.rocket },
+        { href: "/painel/projetos", label: "Projetos", icon: ICONS.folder },
       ],
     },
     {
@@ -20,6 +21,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         { href: "/admin/treinamentos", label: "Treinamentos", icon: ICONS.book },
         { href: "/admin/palestrantes", label: "Palestrantes", icon: ICONS.users },
         { href: "/admin/relatorios", label: "Relatórios", icon: ICONS.file },
+        { href: "/admin/projetos", label: "Projetos · Admin", icon: ICONS.folder },
       ],
     },
   ];
