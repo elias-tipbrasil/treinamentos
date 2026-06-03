@@ -25,14 +25,6 @@ export default function KickoffActions({ id }: { id: string }) {
       >
         Apresentar →
       </Link>
-      <a
-        href={`/api/kickoffs/${id}/pdf`}
-        target="_blank"
-        className="bg-[var(--bg-surface-2)] border border-[var(--border-strong)] hover:border-[var(--tip-red)] text-white px-3 py-2 font-condensed text-xs font-bold tracking-[1.3px] uppercase rounded-lg"
-        title="Exportar PDF"
-      >
-        PDF
-      </a>
       <Link
         href={`/painel/kickoff/${id}`}
         className="bg-[var(--bg-surface-2)] border border-[var(--border-strong)] hover:border-white text-white px-3 py-2 font-condensed text-xs tracking-[1.3px] uppercase rounded-lg"
