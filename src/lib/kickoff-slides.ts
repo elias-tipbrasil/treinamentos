@@ -1,17 +1,16 @@
 export type Slide = {
   id: string;
-  produto?: "mvno2" | "telefonia_fixa"; // se setado, só aparece quando o produto está selecionado
+  produto?: "mvno2" | "telefonia_fixa";
 };
 
 export const SLIDES_BASE: Slide[] = [
-  { id: "bem-vindo" },
-  { id: "hero" },
-  { id: "nosso-time" },
-  { id: "importante" },
-  { id: "faq-integracao" },
-  { id: "fluxo-mvno2", produto: "mvno2" },
-  { id: "fluxo-telefonia", produto: "telefonia_fixa" },
-  { id: "obrigado" },
+  { id: "bem-vindo" },                                 // bastão
+  { id: "hero" },                                      // visibilidade total
+  { id: "fluxo-mvno2", produto: "mvno2" },             // cronograma MVNO
+  { id: "fluxo-telefonia", produto: "telefonia_fixa" },// cronograma Telefonia
+  { id: "nosso-time" },                                // em tempo real (painel)
+  { id: "faq-integracao" },                            // seis perguntas
+  { id: "obrigado" },                                  // estratégia definida
 ];
 
 export const PRODUTOS = [
