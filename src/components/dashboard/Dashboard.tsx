@@ -6,6 +6,7 @@ import {
   LineChart, Line, PieChart, Pie, Cell, Legend,
 } from "recharts";
 import type { DashboardData } from "@/lib/dashboard/data";
+import ParticipantesPanel from "./ParticipantesPanel";
 
 interface Props {
   data: DashboardData;
@@ -254,6 +255,7 @@ export default function Dashboard({ data, filtros, basePath, showPalestranteFilt
               ))}
             </div>
           </Card>
+          <ParticipantesPanel participantes={data.participantes} />
         </>
       )}
     </section>
