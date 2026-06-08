@@ -6,6 +6,7 @@ import {
   LineChart, Line, PieChart, Pie, Cell, Legend,
 } from "recharts";
 import type { DashboardData } from "@/lib/dashboard/data";
+import KickoffDashboard from "./KickoffDashboard";
 import ParticipantesPanel from "./ParticipantesPanel";
 
 interface Props {
@@ -13,12 +14,14 @@ interface Props {
   filtros: { inicio?: string; fim?: string; palestranteId?: string; treinamentoId?: string; isp?: string };
   basePath: string;       // "/admin" ou "/painel/dashboard"
   showPalestranteFiltro?: boolean;
+  kickoffData?: any;
 }
 
 const COLORS = ["#E30613", "#3B82F6", "#22C55E", "#F59E0B", "#A855F7", "#06B6D4", "#EF4444", "#84CC16"];
 
-export default function Dashboard({ data, filtros, basePath, showPalestranteFiltro }: Props) {
+export default function Dashboard({ data, filtros, basePath, showPalestranteFiltro, kickoffData }: Props) {
   const router = useRouter();
+  const [vista, setVista] = useState<"treinamentos" | "kickoffs">("treinamentos");
   const [f, setF] = useState({
     inicio: filtros.inicio || "",
     fim: filtros.fim || "",
@@ -53,6 +56,11 @@ export default function Dashboard({ data, filtros, basePath, showPalestranteFilt
         <h1 className="font-display text-4xl tracking-tight leading-none">DASHBOARD</h1>
       </div>
       <p className="font-condensed text-xs tracking-[3px] uppercase text-[var(--text-muted)] mb-6 ml-5">Visão geral dos treinamentos</p>
+
+      <div className="flex gap-2 mb-6">
+        <button onClick={() => setVista("treinamentos")} className={vista === "treinamentos" ? "font-condensed text-xs font-bold tracking-[1.3px] uppercase px-4 py-2 rounded-lg bg-[var(--tip-red)] text-white" : "font-condensed text-xs font-bold tracking-[1.3px] uppercase px-4 py-2 rounded-lg border border-[var(--border-strong)] text-[var(--text-muted)]"}>Treinamentos</button>
+        <button onClick={() => setVista("kickoffs")} className={vista === "kickoffs" ? "font-condensed text-xs font-bold tracking-[1.3px] uppercase px-4 py-2 rounded-lg bg-[var(--tip-red)] text-white" : "font-condensed text-xs font-bold tracking-[1.3px] uppercase px-4 py-2 rounded-lg border border-[var(--border-strong)] text-[var(--text-muted)]"}>Kickoffs</button>
+      </div>
 
       {/* FILTROS */}
       <form onSubmit={aplicar} className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-4 mb-8">
@@ -104,7 +112,7 @@ export default function Dashboard({ data, filtros, basePath, showPalestranteFilt
         </div>
       </form>
 
-      {semDados ? (
+      {vista === "kickoffs" ? <KickoffDashboard data={kickoffData} /> : semDados ? (
         <EmptyState />
       ) : (
         <>
