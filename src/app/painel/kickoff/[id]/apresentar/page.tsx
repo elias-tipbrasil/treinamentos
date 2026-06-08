@@ -23,5 +23,5 @@ export default async function ApresentarKickoff({ params }: { params: Promise<{ 
 
   const slides = getSlidesParaKickoff(k.produtos || []);
 
-  return <Apresentacao nomeCliente={k.nome_cliente} slides={slides} kickoffId={id} />;
+  return <Apresentacao nomeCliente={k.nome_cliente} slides={slides} kickoffId={id} produtos={k.produtos || []} />;
 }
