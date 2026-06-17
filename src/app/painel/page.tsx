@@ -13,7 +13,7 @@ export default async function PainelHome() {
   const { data: sessoes } = await supabase
     .from("sessoes")
     .select("id, pin, parceiro_isp, data_hora, status, treinamento:treinamentos(nome)")
-    .eq("palestrante_id", user.id)
+    .or(user.role === "admin" ? "palestrante_id.not.is.null" : "palestrante_id.eq." + user.id)
     .order("criada_em", { ascending: false })
     .limit(50);
 
@@ -28,7 +28,7 @@ export default async function PainelHome() {
     <section className="max-w-6xl mx-auto w-full px-6 py-10">
       <div className="flex items-baseline gap-3 mb-2">
         <span className="w-2.5 h-9 bg-[var(--tip-red)] translate-y-1"></span>
-        <h1 className="font-display text-4xl tracking-tight leading-none">SESSÕES</h1>
+        <h1 className="font-display text-4xl tracking-tight leading-none">TREINAMENTO</h1>
       </div>
       <p className="font-condensed text-xs tracking-[3px] uppercase text-[var(--text-muted)] mb-8 ml-5">
         Gerencie suas execuções de treinamento
@@ -39,7 +39,7 @@ export default async function PainelHome() {
           href="/painel/nova-sessao"
           className="inline-flex items-center gap-2 bg-[var(--tip-red)] hover:bg-[var(--tip-red-dark)] text-white px-5 py-3 font-condensed text-sm font-bold tracking-[1.3px] uppercase rounded-lg transition-all"
         >
-          + Nova Sessão
+          + Novo Treinamento
         </Link>
       </div>
 

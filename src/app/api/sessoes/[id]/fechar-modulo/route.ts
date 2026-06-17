@@ -10,7 +10,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   const supabase = createAdminClient();
   const { data: sessao } = await supabase.from("sessoes").select("palestrante_id").eq("id", id).single();
-  if (!sessao || sessao.palestrante_id !== user.id) return NextResponse.json({ erro: "Sem permissão" }, { status: 403 });
+  if (!sessao || (user.role !== "admin" && sessao.palestrante_id !== user.id)) return NextResponse.json({ erro: "Sem permissão" }, { status: 403 });
 
   await supabase.from("modulos_liberados").update({ fechado_em: new Date().toISOString() })
     .eq("sessao_id", id).eq("modulo_id", modulo_id);

@@ -13,7 +13,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     .from("sessoes")
     .select("id, pin, parceiro_isp, status, treinamento_id, treinamento:treinamentos(nome), palestrante_id")
     .eq("id", id).single();
-  if (!sessao || sessao.palestrante_id !== user.id) notFound();
+  if (!sessao || (user.role !== "admin" && sessao.palestrante_id !== user.id)) notFound();
 
   const { data: modulos } = await supabase
     .from("modulos")

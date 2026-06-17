@@ -14,7 +14,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     .from("kickoffs")
     .select("nome_cliente, produtos")
     .eq("id", id)
-    .eq("palestrante_id", user.id)
+    .or(user.role === "admin" ? "palestrante_id.not.is.null" : "palestrante_id.eq." + user.id)
     .single();
 
   if (!k) return NextResponse.json({ erro: "Kickoff não encontrado" }, { status: 404 });

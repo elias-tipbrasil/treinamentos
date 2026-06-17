@@ -11,8 +11,8 @@ export default async function PainelLayout({ children }: { children: React.React
   const sections = [
     {
       items: [
-        { href: "/painel", label: "Sessões", icon: ICONS.dashboard },
-        { href: "/painel/nova-sessao", label: "Nova Sessão", icon: ICONS.plus },
+        { href: "/painel", label: "Treinamento", icon: ICONS.dashboard },
+        { href: "/painel/nova-sessao", label: "Novo Treinamento", icon: ICONS.plus },
         { href: "/painel/dashboard", label: "Dashboard", icon: ICONS.chart },
         { href: "/painel/kickoff", label: "Kickoff", icon: ICONS.rocket },
         { href: "/painel/projetos", label: "Projetos", icon: ICONS.folder },
@@ -25,6 +25,7 @@ export default async function PainelLayout({ children }: { children: React.React
             { href: "/admin/treinamentos", label: "Treinamentos", icon: ICONS.book },
             { href: "/admin/palestrantes", label: "Palestrantes", icon: ICONS.users },
             { href: "/admin/relatorios", label: "Relatórios", icon: ICONS.file },
+        { href: "/admin/projetos", label: "Projetos · Admin", icon: ICONS.folder },
           ],
         }]
       : []),

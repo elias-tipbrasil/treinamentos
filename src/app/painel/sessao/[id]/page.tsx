@@ -15,7 +15,7 @@ export default async function Pagina({ params }: { params: Promise<{ id: string 
     .select("id, pin, parceiro_isp, data_hora, qtd_esperada, status, treinamento_id, palestrante_id, treinamento:treinamentos(id, nome)")
     .eq("id", id).single();
 
-  if (!sessao || sessao.palestrante_id !== user.id) notFound();
+  if (!sessao || (user.role !== "admin" && sessao.palestrante_id !== user.id)) notFound();
 
   // módulos do treinamento + perguntas
   const { data: modulos } = await supabase

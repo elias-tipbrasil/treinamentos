@@ -16,7 +16,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     avaliacao_nota: entrou === "sim" ? nota : null,
     avaliacao_comentario: comentario || null,
     encerrado_em: new Date().toISOString(),
-  }).eq("id", id).eq("palestrante_id", user.id);
+  }).eq("id", id).or(user.role === "admin" ? "palestrante_id.not.is.null" : "palestrante_id.eq." + user.id);
 
   if (error) return NextResponse.json({ erro: error.message }, { status: 500 });
   return NextResponse.json({ ok: true });

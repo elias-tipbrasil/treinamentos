@@ -15,7 +15,7 @@ export default async function EditarKickoff({ params }: { params: Promise<{ id: 
     .from("kickoffs")
     .select("id, nome_cliente, produtos, observacoes")
     .eq("id", id)
-    .eq("palestrante_id", user.id)
+    .or(user.role === "admin" ? "palestrante_id.not.is.null" : "palestrante_id.eq." + user.id)
     .single();
 
   if (!k) notFound();

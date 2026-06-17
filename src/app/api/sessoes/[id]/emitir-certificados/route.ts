@@ -20,7 +20,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     .from("sessoes")
     .select("id, parceiro_isp, data_hora, treinamento_id, palestrante_id, treinamento:treinamentos(nome)")
     .eq("id", id).single();
-  if (!sessao || sessao.palestrante_id !== user.id)
+  if (!sessao || (user.role !== "admin" && sessao.palestrante_id !== user.id))
     return NextResponse.json({ erro: "Sem permissão" }, { status: 403 });
 
   // Pega todas as perguntas com vale_nota=true do treinamento

@@ -17,7 +17,7 @@ export default async function KickoffsPage() {
   const { data: kickoffs } = await supabase
     .from("kickoffs")
     .select("id, nome_cliente, produtos, criado_em, avaliacao_entrou, avaliacao_nota, encerrado_em")
-    .eq("palestrante_id", user.id)
+    .or(user.role === "admin" ? "palestrante_id.not.is.null" : "palestrante_id.eq." + user.id)
     .order("criado_em", { ascending: false });
 
   return (

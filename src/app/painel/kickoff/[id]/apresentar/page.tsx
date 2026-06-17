@@ -16,7 +16,7 @@ export default async function ApresentarKickoff({ params }: { params: Promise<{ 
     .from("kickoffs")
     .select("nome_cliente, produtos")
     .eq("id", id)
-    .eq("palestrante_id", user.id)
+    .or(user.role === "admin" ? "palestrante_id.not.is.null" : "palestrante_id.eq." + user.id)
     .single();
 
   if (!k) notFound();

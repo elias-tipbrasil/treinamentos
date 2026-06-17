@@ -10,7 +10,7 @@ export default async function PainelDashboard({ searchParams }: { searchParams: 
   const user = await getCurrentUser();
   if (!user) redirect("/login");
   const sp = await searchParams;
-  const data = await buildDashboard(sp, user.id);
-  const kickoffData = await buildKickoffDashboard(sp, user.id);
+  const data = await buildDashboard(sp, user.role === "admin" ? undefined : user.id);
+  const kickoffData = await buildKickoffDashboard(sp, user.role === "admin" ? undefined : user.id);
   return <Dashboard data={data} filtros={sp} basePath="/painel/dashboard" kickoffData={kickoffData} />;
 }
