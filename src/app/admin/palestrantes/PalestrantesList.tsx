@@ -58,7 +58,7 @@ export default function PalestrantesList({ usuarios }: { usuarios: U[] }) {
               className="w-full bg-[var(--bg-input)] border border-[var(--border-strong)] text-white px-4 py-3 rounded-lg outline-none focus:border-[var(--tip-red)]" />
             <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}
               className="w-full bg-[var(--bg-input)] border border-[var(--border-strong)] text-white px-4 py-3 rounded-lg outline-none focus:border-[var(--tip-red)]">
-              <option value="palestrante">Palestrante</option>
+              <option value="palestrante">Comum</option>
               <option value="admin">Admin</option>
             </select>
             {erro && <p className="text-red-400 text-sm">{erro}</p>}
@@ -89,7 +89,7 @@ export default function PalestrantesList({ usuarios }: { usuarios: U[] }) {
               <tr key={u.id} className="border-b border-[var(--border)] hover:bg-[var(--bg-surface-2)]">
                 <td className="px-6 py-4 text-sm font-medium">{u.nome}</td>
                 <td className="px-6 py-4 text-sm text-[var(--text-muted)]">{u.email}</td>
-                <td className="px-6 py-4 text-xs font-condensed tracking-[1.5px] uppercase">{u.role}</td>
+                <td className="px-6 py-4 text-xs font-condensed tracking-[1.5px] uppercase">{u.role === "palestrante" ? "Comum" : u.role}</td>
                 <td className="px-6 py-4">
                   <span className={`text-xs font-condensed tracking-[1.5px] uppercase ${u.ativo ? "text-green-400" : "text-red-400"}`}>
                     {u.ativo ? "Ativo" : "Inativo"}
