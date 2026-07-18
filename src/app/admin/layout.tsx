@@ -19,7 +19,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       label: "Admin",
       items: [
         { href: "/admin/treinamentos", label: "Treinamentos", icon: ICONS.book },
-        { href: "/admin/palestrantes", label: "Palestrantes", icon: ICONS.users },
+        { href: "/admin/palestrantes", label: "Usuários", icon: ICONS.users },
         { href: "/admin/relatorios", label: "Relatórios", icon: ICONS.file },
         { href: "/admin/projetos", label: "Projetos · Admin", icon: ICONS.folder },
       ],
