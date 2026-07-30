@@ -99,7 +99,7 @@ export async function PATCH(req: Request) {
     "data_entrada", "arte_aprovada", "nome_cliente", "cod_easy", "qtde_contratada",
     "qtde_enviada", "data_envio", "status_arte", "producao", "plano", "obs",
     "nome_rede", "link_arte", "endereco_entrega", "responsavel_contato", "rede",
-    "prova_digital_recebida",
+    "prova_digital_recebida", "previsao_entrega",
   ];
   const update: Record<string, any> = {};
   for (const k of permitido) if (k in campos) update[k] = campos[k] === "" ? null : campos[k];

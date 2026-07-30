@@ -8,6 +8,15 @@ const PENDENTE_GRUPO = ["Aguard. Parceiro", "Aguard. Mkt TIP", "Reservado", "Em 
 const STATUS_ARTE_OPTS = ["Aguard. Parceiro", "Aguard. Mkt TIP", "Reservado", "Em produção", "Aguard. Envio", "Pronto"];
 const PRODUCAO_OPTS = ["Produção TIP", "Grafica Campinas", "Grafica SP"];
 const PLANO_OPTS = ["FIXO", "CONSUMO", "MISTO"];
+const DIAS_PREVISAO_ARQIA = 60;
+
+const somarDias = (dias: number) => {
+  const d = new Date();
+  d.setDate(d.getDate() + dias);
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${mm}-${dd}`;
+};
 
 interface Pedido {
   id: string;
@@ -28,15 +37,19 @@ interface Pedido {
   endereco_entrega: string | null;
   responsavel_contato: string | null;
   prova_digital_recebida: string | null;
+  previsao_entrega: string | null;
 }
 
 export default function ChipPedidosTable({ rede }: { rede: string }) {
+  const isArqia = rede === "Arqia";
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [loading, setLoading] = useState(true);
   const [busca, setBusca] = useState("");
   const [statusFiltro, setStatusFiltro] = useState("Todos");
   const [dataDe, setDataDe] = useState("");
   const [dataAte, setDataAte] = useState("");
+  const [prevDe, setPrevDe] = useState("");
+  const [prevAte, setPrevAte] = useState("");
 
   const load = async (r: string) => {
     setLoading(true);
@@ -45,16 +58,27 @@ export default function ChipPedidosTable({ rede }: { rede: string }) {
     setPedidos((j.pedidos || []).map((p: Pedido) => ({ ...p, cod_easy: limparCodEasy(p.cod_easy) })));
     setLoading(false);
   };
-  useEffect(() => { load(rede); setStatusFiltro("Todos"); }, [rede]);
+  useEffect(() => { load(rede); setStatusFiltro("Todos"); setPrevDe(""); setPrevAte(""); }, [rede]);
 
-  const salvarCampo = async (id: string, campo: string, valor: any, recarregar?: boolean) => {
-    setPedidos((prev) => prev.map((p) => (p.id === id ? { ...p, [campo]: valor } : p)));
+  const salvarCampos = async (id: string, patch: Record<string, any>, recarregar?: boolean) => {
+    setPedidos((prev) => prev.map((p) => (p.id === id ? { ...p, ...patch } : p)));
     await fetch("/api/chip/producao", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, [campo]: valor }),
+      body: JSON.stringify({ id, ...patch }),
     });
     if (recarregar) load(rede);
+  };
+
+  const salvarCampo = async (id: string, campo: string, valor: any, recarregar?: boolean) =>
+    salvarCampos(id, { [campo]: valor }, recarregar);
+
+  const salvarStatus = async (p: Pedido, valor: string) => {
+    if (isArqia && valor === "Em produção" && !p.previsao_entrega) {
+      await salvarCampos(p.id, { status_arte: valor, previsao_entrega: somarDias(DIAS_PREVISAO_ARQIA) });
+      return;
+    }
+    await salvarCampos(p.id, { status_arte: valor });
   };
 
   const novaLinha = async () => {
@@ -85,6 +109,12 @@ export default function ChipPedidosTable({ rede }: { rede: string }) {
     } else if (statusFiltro !== "Todos" && (p.status_arte || "") !== statusFiltro) return false;
     if (dataDe && p.data_entrada < dataDe) return false;
     if (dataAte && p.data_entrada > dataAte) return false;
+    if (isArqia && (prevDe || prevAte)) {
+      const prev = p.previsao_entrega || "";
+      if (!prev) return false;
+      if (prevDe && prev < prevDe) return false;
+      if (prevAte && prev > prevAte) return false;
+    }
     if (!busca.trim()) return true;
     const b = busca.toLowerCase();
     return p.nome_cliente.toLowerCase().includes(b) || (p.nome_rede || "").toLowerCase().includes(b) || (p.cod_easy || "").toLowerCase().includes(b);
@@ -93,29 +123,55 @@ export default function ChipPedidosTable({ rede }: { rede: string }) {
   const totalContratado = filtrados.reduce((s, p) => s + (p.qtde_contratada || 0), 0);
   const totalEnviado = filtrados.reduce((s, p) => s + (p.qtde_enviada || 0), 0);
   const totalPendente = totalContratado - totalEnviado;
+  const totalColunas = isArqia ? 20 : 19;
 
   return (
     <div>
       <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
-        <div className="flex items-center gap-2 bg-[var(--bg-input)] border border-[var(--border-strong)] rounded-lg px-3 py-2">
-          <span className="font-condensed text-[10px] tracking-[1.5px] uppercase text-[var(--text-muted)]">Entre</span>
-          <input
-            type="date"
-            value={dataDe}
-            onChange={(e) => setDataDe(e.target.value)}
-            className={`bg-transparent outline-none text-sm ${dataDe ? "text-white" : "text-[var(--text-muted)]"}`}
-          />
-          <span className="text-[var(--text-muted)] text-xs">e</span>
-          <input
-            type="date"
-            value={dataAte}
-            onChange={(e) => setDataAte(e.target.value)}
-            className={`bg-transparent outline-none text-sm ${dataAte ? "text-white" : "text-[var(--text-muted)]"}`}
-          />
-          {(dataDe || dataAte) && (
-            <button onClick={() => { setDataDe(""); setDataAte(""); }} className="text-[var(--text-muted)] hover:text-white text-xs px-1">✕</button>
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2 bg-[var(--bg-input)] border border-[var(--border-strong)] rounded-lg px-3 py-2">
+            <span className="font-condensed text-[10px] tracking-[1.5px] uppercase text-[var(--text-muted)]">Entre</span>
+            <input
+              type="date"
+              value={dataDe}
+              onChange={(e) => setDataDe(e.target.value)}
+              className={`bg-transparent outline-none text-sm ${dataDe ? "text-white" : "text-[var(--text-muted)]"}`}
+            />
+            <span className="text-[var(--text-muted)] text-xs">e</span>
+            <input
+              type="date"
+              value={dataAte}
+              onChange={(e) => setDataAte(e.target.value)}
+              className={`bg-transparent outline-none text-sm ${dataAte ? "text-white" : "text-[var(--text-muted)]"}`}
+            />
+            {(dataDe || dataAte) && (
+              <button onClick={() => { setDataDe(""); setDataAte(""); }} className="text-[var(--text-muted)] hover:text-white text-xs px-1">✕</button>
+            )}
+          </div>
+
+          {isArqia && (
+            <div className="flex items-center gap-2 bg-[var(--bg-input)] border border-[var(--border-strong)] rounded-lg px-3 py-2">
+              <span className="font-condensed text-[10px] tracking-[1.5px] uppercase text-[var(--text-muted)]">Previsão entrega entre</span>
+              <input
+                type="date"
+                value={prevDe}
+                onChange={(e) => setPrevDe(e.target.value)}
+                className={`bg-transparent outline-none text-sm ${prevDe ? "text-white" : "text-[var(--text-muted)]"}`}
+              />
+              <span className="text-[var(--text-muted)] text-xs">e</span>
+              <input
+                type="date"
+                value={prevAte}
+                onChange={(e) => setPrevAte(e.target.value)}
+                className={`bg-transparent outline-none text-sm ${prevAte ? "text-white" : "text-[var(--text-muted)]"}`}
+              />
+              {(prevDe || prevAte) && (
+                <button onClick={() => { setPrevDe(""); setPrevAte(""); }} className="text-[var(--text-muted)] hover:text-white text-xs px-1">✕</button>
+              )}
+            </div>
           )}
         </div>
+
         <div className="flex items-center gap-3">
           <input
             value={busca}
@@ -156,7 +212,7 @@ export default function ChipPedidosTable({ rede }: { rede: string }) {
 
       <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm min-w-[2660px]" style={{ tableLayout: "fixed" }}>
+          <table className={`w-full text-sm ${isArqia ? "min-w-[2800px]" : "min-w-[2660px]"}`} style={{ tableLayout: "fixed" }}>
             <thead>
               <tr className="border-b border-[var(--border)] text-left font-condensed text-[10px] tracking-[1.5px] uppercase text-[var(--text-muted)]">
                 <Th w="130px" sticky left="0px">Entrada</Th>
@@ -171,6 +227,7 @@ export default function ChipPedidosTable({ rede }: { rede: string }) {
                 <Th w="130px">Data envio</Th>
                 <Th w="200px">Status projeto</Th>
                 <Th w="130px">Prova digital</Th>
+                {isArqia && <Th w="140px">Previsão entrega</Th>}
                 <Th w="150px">Produção</Th>
                 <Th w="120px">Plano</Th>
                 <Th w="180px">Obs</Th>
@@ -182,10 +239,10 @@ export default function ChipPedidosTable({ rede }: { rede: string }) {
             </thead>
             <tbody className="divide-y divide-[var(--border)]">
               {loading && (
-                <tr><td colSpan={19} className="py-10 text-center font-condensed text-xs tracking-[2px] uppercase text-[var(--text-muted)]">Carregando...</td></tr>
+                <tr><td colSpan={totalColunas} className="py-10 text-center font-condensed text-xs tracking-[2px] uppercase text-[var(--text-muted)]">Carregando...</td></tr>
               )}
               {!loading && filtrados.length === 0 && (
-                <tr><td colSpan={19} className="py-10 text-center font-condensed text-xs tracking-[2px] uppercase text-[var(--text-muted)]">Nenhum pedido em {REDE_LABELS[rede]}</td></tr>
+                <tr><td colSpan={totalColunas} className="py-10 text-center font-condensed text-xs tracking-[2px] uppercase text-[var(--text-muted)]">Nenhum pedido em {REDE_LABELS[rede]}</td></tr>
               )}
               {filtrados.map((p) => {
                 const pendente = (p.qtde_contratada || 0) - (p.qtde_enviada || 0);
@@ -204,9 +261,12 @@ export default function ChipPedidosTable({ rede }: { rede: string }) {
                     <Td><DateCell value={p.arte_aprovada} onSave={(v) => salvarCampo(p.id, "arte_aprovada", v)} /></Td>
                     <Td><DateCell value={p.data_envio} onSave={(v) => salvarCampo(p.id, "data_envio", v)} /></Td>
                     <Td>
-                      <SelectCell value={p.status_arte || ""} options={STATUS_ARTE_OPTS} onSave={(v) => salvarCampo(p.id, "status_arte", v)} badge />
+                      <SelectCell value={p.status_arte || ""} options={STATUS_ARTE_OPTS} onSave={(v) => salvarStatus(p, v)} badge />
                     </Td>
                     <Td><DateCell value={p.prova_digital_recebida} onSave={(v) => salvarCampo(p.id, "prova_digital_recebida", v)} /></Td>
+                    {isArqia && (
+                      <Td><DateCell value={p.previsao_entrega} onSave={(v) => salvarCampo(p.id, "previsao_entrega", v)} /></Td>
+                    )}
                     <Td><SelectCell value={p.producao || ""} options={PRODUCAO_OPTS} onSave={(v) => salvarCampo(p.id, "producao", v)} /></Td>
                     <Td><SelectCell value={p.plano || ""} options={PLANO_OPTS} onSave={(v) => salvarCampo(p.id, "plano", v)} /></Td>
                     <Td><TextCell value={p.obs || ""} onSave={(v) => salvarCampo(p.id, "obs", v)} /></Td>
