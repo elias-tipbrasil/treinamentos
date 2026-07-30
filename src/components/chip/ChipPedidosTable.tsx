@@ -4,8 +4,8 @@ import { Th, Td, TextCell, NumberCell, DateCell, SelectCell, OperadoraBadge, Lin
 
 const REDE_LABELS: Record<string, string> = { Tim: "Surf Chip", Vivo: "Telecall Chip", Arqia: "Arqia Chip", Valhalla: "Valhalla Chip" };
 const REDE_LABELS_REVERSO: Record<string, string> = Object.fromEntries(Object.entries(REDE_LABELS).map(([k, v]) => [v, k]));
-const PENDENTE_GRUPO = ["Aguard. Parceiro", "Aguard. Aprovação Arte", "Em produção"];
-const STATUS_ARTE_OPTS = ["Pronto", "Aguard. Parceiro", "Aguard. Aprovação Arte", "Em produção"];
+const PENDENTE_GRUPO = ["Aguard. Parceiro", "Aguard. Mkt TIP", "Reservado", "Em produção", "Aguard. Envio"];
+const STATUS_ARTE_OPTS = ["Aguard. Parceiro", "Aguard. Mkt TIP", "Reservado", "Em produção", "Aguard. Envio", "Pronto"];
 const PRODUCAO_OPTS = ["Produção TIP", "Grafica Campinas", "Grafica SP"];
 const PLANO_OPTS = ["FIXO", "CONSUMO", "MISTO"];
 
@@ -169,7 +169,7 @@ export default function ChipPedidosTable({ rede }: { rede: string }) {
                 <Th w="90px" align="right">Pendente</Th>
                 <Th w="130px">Arte aprovada</Th>
                 <Th w="130px">Data envio</Th>
-                <Th w="200px">Status arte</Th>
+                <Th w="200px">Status projeto</Th>
                 <Th w="130px">Prova digital</Th>
                 <Th w="150px">Produção</Th>
                 <Th w="120px">Plano</Th>
